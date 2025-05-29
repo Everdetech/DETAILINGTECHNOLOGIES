@@ -1,90 +1,84 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DETAILINGTECHNOLOGIES</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DetailingTechnologies</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      background: #f5f5f5;
       margin: 0;
-      background: #f0f0f5;
-      color: #333;
+      padding: 0;
     }
+
     header {
-      background: #007bff;
+      background-color: #222;
       color: white;
       padding: 20px;
       text-align: center;
     }
-    main {
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
-    }
-    .card {
+
+    section.card {
       background: white;
-      border-radius: 8px;
+      margin: 30px auto;
       padding: 20px;
-      margin-bottom: 30px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      max-width: 800px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    h1, h2 {
-      margin-top: 0;
-    }
+
     .product {
-      display: inline-block;
-      width: 200px;
-      margin: 15px;
-      vertical-align: top;
-      box-shadow: 0 0 6px rgba(0,0,0,0.1);
-      border-radius: 8px;
-      background: #fafafa;
-      padding: 15px;
-      text-align: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 15px;
     }
+
     .product img {
       width: 150px;
-      height: auto;
-      object-fit: contain;
-      margin-bottom: 10px;
+      border-radius: 10px;
     }
-    .product h3 {
-      margin: 10px 0 5px;
-    }
-    .product p {
-      font-size: 0.9em;
-      color: #555;
+
+    footer {
+      background-color: #222;
+      color: white;
+      text-align: center;
+      padding: 10px;
     }
   </style>
 </head>
 <body>
+
   <header>
-    <h1>DETAILINGTECHNOLOGIES</h1>
-    <p>Soluciones electrónicas para tu vehículo</p>
+    <h1>DetailingTechnologies</h1>
+    <p>Productos tecnológicos a tu alcance</p>
   </header>
 
-  <main>
+  <section class="card" id="productos">
+    <h2>Productos</h2>
 
-    <!-- Aquí puedes editar libremente esta sección -->
-    <section class="card" id="productos">
-      <h2>Productos</h2>
-      <div class="product">
-        <img src="Users\evers\Pictures\Camera Roll\up.jpg"Imagen de prueba" style="width:150px;">
-        <h3>Nombre del Producto 1</h3>
-        <p>Descripción del producto 1.</p>
-        <p><strong>Precio:</strong> L 1,000</p>
-      </div>
-      <div class="product">
-        <img src="ruta/a/la/imagen2.jpg" alt="Nombre del Producto 2" style="width:150px;">
-        <h3>Nombre del Producto 2</h3>
-        <p>Descripción del producto 2.</p>
-        <p><strong>Precio:</strong> L 2,000</p>
-      </div>
-      <!-- Agrega más productos según sea necesario -->
-    </section>
-    <!-- Fin sección modificable -->
+    <div class="product">
+      <img src="IMAGENES/up.jpg" alt="ARDUINO UNO R3 SMD">
+      <h3>ARDUINO UNO R3 SMD</h3>
+      <p>Placa compatible para proyectos electrónicos, ideal para aprender robótica y automatización.</p>
+      <p><strong>Precio:</strong> L 450</p>
+    </div>
 
-  </main>
+    <!-- Puedes copiar este bloque para más productos -->
+    <!--
+    <div class="product">
+      <img src="IMAGENES/otro-producto.jpg" alt="Nombre del producto">
+      <h3>Nombre del producto</h3>
+      <p>Descripción del producto.</p>
+      <p><strong>Precio:</strong> L 000</p>
+    </div>
+    -->
+
+  </section>
+
+  <footer>
+    <p>© 2025 DetailingTechnologies - Todos los derechos reservados</p>
+  </footer>
+
 </body>
 </html>
