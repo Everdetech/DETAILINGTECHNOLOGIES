@@ -1,224 +1,222 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Agregar Imágenes Fácilmente</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DEDTAILINGTECHNOLOGIES</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #111;
+      color: white;
       padding: 20px;
-    }
-    #upload-area {
-      border: 2px dashed #aaa;
-      padding: 30px;
       text-align: center;
-      border-radius: 10px;
-      cursor: pointer;
-      background: #f9f9f9;
     }
-    #upload-area.hover {
-      background-color: #e0f7fa;
-    }
-    #preview {
-      margin-top: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .preview-img {
-      max-width: 150px;
-      max-height: 150px;
-      object-fit: cover;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-  </style>
-</head>
-<body>
-
-  <h2>Sube tus imágenes</h2>
-  <div id="upload-area">Haz clic o arrastra imágenes aquí</div>
-  <input type="file" id="file-input" multiple accept="image/*" hidden />
-  
-  <div id="preview"></div>
-
-  <script>
-    const uploadArea = document.getElementById('upload-area');
-    const fileInput = document.getElementById('file-input');
-    const preview = document.getElementById('preview');
-
-    uploadArea.addEventListener('click', () => fileInput.click());
-
-    uploadArea.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      uploadArea.classList.add('hover');
-    });
-
-    uploadArea.addEventListener('dragleave', () => {
-      uploadArea.classList.remove('hover');
-    });
-
-    uploadArea.addEventListener('drop', (e) => {
-      e.preventDefault();
-      uploadArea.classList.remove('hover');
-      handleFiles(e.dataTransfer.files);
-    });
-
-    fileInput.addEventListener('change', () => {
-      handleFiles(fileInput.files);
-    });
-
-    function handleFiles(files) {
-      Array.from(files).forEach(file => {
-        if (file.type.startsWith('image/')) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.className = 'preview-img';
-            preview.appendChild(img);
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-    }
-  </script>
-
-</body>
-</html>
-🔧 ¿Qué puedes hacer con este código?
-Click en el área → seleccionas imágenes.
-
-Arrastras imágenes desde tu PC → se muestran automáticamente.
-
-Admite múltiples imágenes a la vez.
-
-No requiere conexión a servidor.
-
-¿Quieres que esas imágenes se guarden en local o en algún servidor? Puedo ayudarte a añadir esa funcionalidad también.
-
-
-2/2
-
-
-
-
-
-
-Dijiste:
-pero siempre dejando el codigo origuinal es para mi negocio
-
-
-ChatGPT dijo:
-Perfecto, si es para tu negocio y quieres mantener el código original pero con posibilidad de extenderlo más adelante, te dejo el mismo código comentado y bien estructurado, para que puedas adaptarlo fácilmente sin perder su forma original.
-
-✅ Código preparado para uso profesional (con comentarios claros)
-html
-Copiar
-Editar
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Subida de Imágenes - Negocio</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
+    section.card {
+      background: white;
+      margin: 20px auto;
       padding: 20px;
-      background-color: #f2f2f2;
-    }
-
-    #upload-area {
-      border: 2px dashed #999;
-      padding: 30px;
-      text-align: center;
       border-radius: 10px;
-      background: #fff;
-      transition: background-color 0.3s;
-      cursor: pointer;
+      max-width: 800px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
-    #upload-area.hover {
-      background-color: #e0f7fa;
-    }
-
-    #preview {
-      margin-top: 20px;
+    .product {
       display: flex;
-      flex-wrap: wrap;
       gap: 15px;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 15px;
     }
-
-    .preview-img {
-      width: 150px;
-      height: 150px;
-      object-fit: cover;
-      border: 1px solid #ccc;
+    .product img {
+      width: 100px;
+      height: 100px;
       border-radius: 10px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      object-fit: cover;
+    }
+    .product-info {
+      flex: 1;
+    }
+    footer {
+      background: #111;
+      color: white;
+      text-align: center;
+      padding: 10px;
+    }
+    #admin-panel {
+      display: none;
+      margin-top: 20px;
+    }
+    input, textarea, button {
+      display: block;
+      margin: 8px 0;
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .btn {
+      background: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #login-admin {
+      margin: 20px;
+      text-align: center;
+    }
+    #contacto a {
+      color: #333;
+      text-decoration: none;
+      display: block;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
 
-  <h2>📷 Sube tus Imágenes</h2>
+  <header>
+    <h1>DEDTAILINGTECHNOLOGIES</h1>
+    <p>Productos tecnológicos a tu alcance</p>
+  </header>
 
-  <!-- Área principal de carga -->
-  <div id="upload-area">Haz clic o arrastra tus imágenes aquí</div>
+  <section class="card" id="productos">
+    <h2>Productos</h2>
+    <div id="lista-productos"></div>
+  </section>
 
-  <!-- Input oculto que se activa al hacer clic -->
-  <input type="file" id="file-input" multiple accept="image/*" hidden />
+  <section class="card" id="contacto">
+    <h2>Contacto</h2>
+    <div id="info-contacto">
+      <p>WhatsApp: <a href="https://wa.me/50492758062" target="_blank" id="wa-link">92758062</a></p>
+      <p id="direccion">Dirección no configurada</p>
+    </div>
+  </section>
 
-  <!-- Vista previa de imágenes -->
-  <div id="preview"></div>
+  <div id="login-admin">
+    <button class="btn" onclick="pedirClave()">Modo administrador 🔒</button>
+  </div>
+
+  <section class="card" id="admin-panel">
+    <h2>Agregar producto</h2>
+    <input type="file" id="img-input" accept="image/*" />
+    <input type="text" id="nombre" placeholder="Nombre del producto" />
+    <textarea id="descripcion" placeholder="Descripción"></textarea>
+    <input type="text" id="precio" placeholder="Precio" />
+    <button class="btn" onclick="agregarProducto()">Agregar</button>
+
+    <h2>Actualizar contacto</h2>
+    <input type="text" id="nuevo-wa" placeholder="Nuevo número de WhatsApp (sin + ni espacios)" />
+    <input type="text" id="nueva-direccion" placeholder="Dirección o ubicación" />
+    <button class="btn" onclick="actualizarContacto()">Actualizar contacto</button>
+  </section>
+
+  <footer>
+    <p>© 2025 DEDTAILINGTECHNOLOGIES - Todos los derechos reservados</p>
+  </footer>
 
   <script>
-    // Elementos principales
-    const uploadArea = document.getElementById('upload-area');
-    const fileInput = document.getElementById('file-input');
-    const preview = document.getElementById('preview');
+    const claveAcceso = "TUTITAOLIVER25";
 
-    // Al hacer clic en el área, se abre el selector de archivos
-    uploadArea.addEventListener('click', () => fileInput.click());
+    // Productos guardados
+    let productos = JSON.parse(localStorage.getItem("productos") || "[]");
 
-    // Estilo al arrastrar
-    uploadArea.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      uploadArea.classList.add('hover');
-    });
-
-    // Quitar estilo al salir
-    uploadArea.addEventListener('dragleave', () => {
-      uploadArea.classList.remove('hover');
-    });
-
-    // Al soltar imágenes en el área
-    uploadArea.addEventListener('drop', (e) => {
-      e.preventDefault();
-      uploadArea.classList.remove('hover');
-      handleFiles(e.dataTransfer.files); // Procesar archivos
-    });
-
-    // Al seleccionar archivos manualmente
-    fileInput.addEventListener('change', () => {
-      handleFiles(fileInput.files); // Procesar archivos
-    });
-
-    // Función que procesa y muestra imágenes
-    function handleFiles(files) {
-      Array.from(files).forEach(file => {
-        if (file.type.startsWith('image/')) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.className = 'preview-img';
-            preview.appendChild(img);
-          };
-          reader.readAsDataURL(file);
-        }
+    function mostrarProductos() {
+      const lista = document.getElementById("lista-productos");
+      lista.innerHTML = "";
+      productos.forEach(p => {
+        const div = document.createElement("div");
+        div.className = "product";
+        div.innerHTML = `
+          <img src="${p.imagen}" alt="${p.nombre}" />
+          <div class="product-info">
+            <h3>${p.nombre}</h3>
+            <p>${p.descripcion}</p>
+            <p><strong>Precio:</strong> ${p.precio}</p>
+          </div>`;
+        lista.appendChild(div);
       });
     }
+
+    function agregarProducto() {
+      const imgInput = document.getElementById("img-input");
+      const nombre = document.getElementById("nombre").value;
+      const descripcion = document.getElementById("descripcion").value;
+      const precio = document.getElementById("precio").value;
+
+      if (!imgInput.files[0] || !nombre || !descripcion || !precio) {
+        alert("Completa todos los campos.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        productos.push({
+          imagen: e.target.result,
+          nombre,
+          descripcion,
+          precio
+        });
+        localStorage.setItem("productos", JSON.stringify(productos));
+        mostrarProductos();
+        document.getElementById("img-input").value = "";
+        document.getElementById("nombre").value = "";
+        document.getElementById("descripcion").value = "";
+        document.getElementById("precio").value = "";
+        alert("Producto agregado");
+      };
+      reader.readAsDataURL(imgInput.files[0]);
+    }
+
+    function pedirClave() {
+      const clave = prompt("Ingresa la clave de administrador:");
+      if (clave === claveAcceso) {
+        document.getElementById("admin-panel").style.display = "block";
+      } else {
+        alert("Clave incorrecta");
+      }
+    }
+
+    function actualizarContacto() {
+      const nuevoWA = document.getElementById("nuevo-wa").value;
+      const nuevaDir = document.getElementById("nueva-direccion").value;
+
+      if (nuevoWA) {
+        document.getElementById("wa-link").textContent = nuevoWA;
+        document.getElementById("wa-link").href = "https://wa.me/504" + nuevoWA;
+      }
+
+      if (nuevaDir) {
+        document.getElementById("direccion").textContent = nuevaDir;
+      }
+
+      localStorage.setItem("contacto", JSON.stringify({
+        wa: nuevoWA || document.getElementById("wa-link").textContent,
+        dir: nuevaDir || document.getElementById("direccion").textContent
+      }));
+
+      alert("Contacto actualizado");
+    }
+
+    function cargarContacto() {
+      const datos = JSON.parse(localStorage.getItem("contacto") || "{}");
+      if (datos.wa) {
+        document.getElementById("wa-link").textContent = datos.wa;
+        document.getElementById("wa-link").href = "https://wa.me/504" + datos.wa;
+      }
+      if (datos.dir) {
+        document.getElementById("direccion").textContent = datos.dir;
+      }
+    }
+
+    // Al iniciar
+    mostrarProductos();
+    cargarContacto();
   </script>
 
 </body>
