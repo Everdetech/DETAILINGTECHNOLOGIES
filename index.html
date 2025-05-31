@@ -315,15 +315,23 @@
     getDownloadURL,
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-  // TODO: Reemplaza esta configuración con la de tu proyecto Firebase
-  const firebaseConfig = {
-    apiKey: "TU_APIKEY",
-    authDomain: "TU_AUTHDOMAIN",
-    projectId: "TU_PROJECTID",
-    storageBucket: "TU_STORAGEBUCKET",
-    messagingSenderId: "TU_MESSAGINGSENDERID",
-    appId: "TU_APPID",
-  };
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyDTq6tg23FH6o-msd8smbvsoEPgH6hW-Lo",
+  authDomain: "detailingtechnologies-1a8b4.firebaseapp.com",
+  projectId: "detailingtechnologies-1a8b4",
+  storageBucket: "detailingtechnologies-1a8b4.firebasestorage.app",
+  messagingSenderId: "1016910506813",
+  appId: "1:1016910506813:web:7af1bc876bc41f616ef354"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
   // Inicialización Firebase
   const app = initializeApp(firebaseConfig);
@@ -350,7 +358,7 @@
   let cartData = JSON.parse(localStorage.getItem("cartData") || "[]");
 
   // Usuario admin (puedes cambiar a tus emails)
-  const adminEmails = ["admin@tudominio.com"];
+  const adminEmails = ["detailingtechnologies@gmail.com"];
 
   // Abrir y cerrar modales
   window.openModal = function (type) {
