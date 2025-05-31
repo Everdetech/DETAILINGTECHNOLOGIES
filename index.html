@@ -1,96 +1,174 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Tienda Electrónica</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Detailing Technologies - Tienda</title>
   <style>
     body {
-      font-family: sans-serif;
-      background: #f9f9f9;
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
       padding: 0;
+      background: url("WhatsApp Image 2025-02-15 at 9.14.47 AM (2).jpeg") no-repeat center center fixed;
+      background-size: cover;
+      color: #000;
+    }
+
+    header, footer {
+      background: rgba(255, 255, 255, 0.8);
+      padding: 1em;
+      text-align: center;
+    }
+
+    header h1 {
+      color: #2a72b5;
+      font-size: 2em;
     }
 
     .contenedor-productos {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 20px;
-      padding: 40px;
+      padding: 2em;
+      gap: 2em;
+      background-color: rgba(255, 255, 255, 0.8);
     }
 
     .producto {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      padding: 20px;
-      width: 300px;
+      background: #ffffffee;
+      border-radius: 15px;
+      padding: 1em;
+      width: 280px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
       text-align: center;
-      transition: transform 0.3s;
-    }
-
-    .producto:hover {
-      transform: scale(1.02);
     }
 
     .producto img {
-      max-width: 100%;
-      border-radius: 8px;
+      width: 100%;
+      border-radius: 10px;
     }
 
-    .producto h2 {
-      margin-top: 10px;
-      font-size: 22px;
-      color: #333;
-    }
-
-    .producto p {
-      font-size: 18px;
-      color: #0077cc;
-      font-weight: bold;
-    }
-
-    .producto button {
-      background-color: #0077cc;
-      color: #fff;
+    button {
+      background: #2a72b5;
+      color: white;
       border: none;
-      padding: 10px 20px;
-      margin-top: 10px;
-      border-radius: 6px;
+      padding: 0.6em 1.2em;
+      font-size: 1em;
       cursor: pointer;
-      font-size: 16px;
+      border-radius: 8px;
+      margin-top: 1em;
     }
 
-    .producto button:hover {
-      background-color: #005fa3;
+    .carrito {
+      background: #fff;
+      padding: 2em;
+      margin: 2em auto;
+      width: 80%;
+      max-width: 600px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+    }
+
+    .carrito h2 {
+      color: #2a72b5;
+    }
+
+    .item-carrito {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5em;
+    }
+
+    .boton-eliminar {
+      background-color: red;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      font-weight: bold;
+      width: 25px;
+      height: 25px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <h1 style="text-align:center; margin-top:30px;">Tienda Online Electrónica</h1>
+<header>
+  <h1>Detailing Technologies</h1>
+  <p>¡Arma tus proyectos con el mejor kit de Arduino!</p>
+</header>
 
-  <div class="contenedor-productos">
-    <div class="producto">
-      <img src="arduino2.jpg" alt="Kit Arduino Básico">
-      <h2>Kit Arduino Básico</h2>
-      <p>L700.00</p>
-      <button onclick="agregarAlCarrito('Kit Arduino Básico', 700, 'arduino2.jpg')">Agregar al carrito</button>
-    </div>
-
-    <!-- Puedes duplicar este bloque para más productos -->
+<div class="contenedor-productos">
+  <div class="producto">
+    <img src="Kit de Arduino Basico.jpeg" alt="Kit Arduino Básico" />
+    <h3>Kit Arduino Básico</h3>
+    <p><strong>L700.00</strong></p>
+    <button onclick="agregarAlCarrito('Kit Arduino Básico', 700)">Agregar al carrito</button>
   </div>
+</div>
 
-  <!-- Aquí iría tu carrito, etc. -->
+<div class="carrito" id="carrito">
+  <h2>Carrito de Compras</h2>
+  <ul id="lista-carrito"></ul>
+  <p><strong>Total:</strong> <span id="total">0</span> L</p>
+  <button onclick="enviarPedido()">Comprar por WhatsApp</button>
+</div>
 
-  <script>
-    const carrito = [];
+<footer>
+  <p>Contáctanos: detailingtechnologies@gmail.com | WhatsApp: 9275-8062</p>
+</footer>
 
-    function agregarAlCarrito(nombre, precio, imagen) {
-      carrito.push({ nombre, precio, imagen });
-      alert(`Se agregó "${nombre}" al carrito.`);
-      // Aquí luego puedes mostrar el carrito visualmente si lo deseas.
+<script>
+  const carrito = [];
+
+  function agregarAlCarrito(nombre, precio) {
+    carrito.push({ nombre, precio });
+    mostrarCarrito();
+  }
+
+  function mostrarCarrito() {
+    const lista = document.getElementById('lista-carrito');
+    const totalElem = document.getElementById('total');
+    lista.innerHTML = '';
+    let total = 0;
+
+    carrito.forEach((item, index) => {
+      total += item.precio;
+      const li = document.createElement('li');
+      li.className = 'item-carrito';
+      li.innerHTML = `
+        ${item.nombre} - L${item.precio}
+        <button class="boton-eliminar" onclick="eliminarDelCarrito(${index})">❌</button>
+      `;
+      lista.appendChild(li);
+    });
+
+    totalElem.textContent = total;
+  }
+
+  function eliminarDelCarrito(indice) {
+    carrito.splice(indice, 1);
+    mostrarCarrito();
+  }
+
+  function enviarPedido() {
+    if (carrito.length === 0) {
+      alert("El carrito está vacío.");
+      return;
     }
-  </script>
+    let mensaje = "Hola, quiero comprar los siguientes productos:%0A";
+    carrito.forEach(item => {
+      mensaje += `- ${item.nombre} (L${item.precio})%0A`;
+    });
+    const total = carrito.reduce((sum, item) => sum + item.precio, 0);
+    mensaje += `%0ATotal: L${total}`;
+
+    const numeroWhatsApp = "50492758062";
+    const url = `https://wa.me/${numeroWhatsApp}?text=${mensaje}`;
+    window.open(url, "_blank");
+  }
+</script>
+
 </body>
 </html>
