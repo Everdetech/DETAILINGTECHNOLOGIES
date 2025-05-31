@@ -266,4 +266,85 @@
       const li = document.createElement("li");
       li.innerHTML = `
         ${item.nombre} - $${Number(item.precio).toFixed(2)}
-        <button onclick="removeFromCart(${i})">X</
+        <button onclick="removeFromCart(${i})">X</button>
+      `;
+      cartItems.appendChild(li);
+    });
+    cartTotalEl.textContent = total.toFixed(2);
+  }
+
+  // Quitar del carrito
+  window.removeFromCart = (index) => {
+    cart.splice(index, 1);
+    renderCart();
+  };
+
+  // Añadir producto nuevo (solo admin)
+  window.addProduct = async () => {
+    const nombre = document.getElementById("prod-name").value.trim();
+    const descripcion = document.getElementById("prod-desc").value.trim();
+    const precio = parseFloat(document.getElementById("prod-price").value);
+    const imgInput = document.getElementById("prod-img");
+    if (!nombre || !descripcion || !precio || precio <= 0 || imgInput.files.length === 0) {
+      return alert("Completa todos los campos correctamente");
+    }
+
+    // Subir imagen a Storage
+    const file = imgInput.files[0];
+    const imgRef = ref(storage, `productos/${file.name}_${Date.now()}`);
+    try {
+      const uploadResult = await uploadBytes(imgRef, file);
+      const url = await getDownloadURL(uploadResult.ref);
+
+      // Guardar producto en Firestore
+      await addDoc(collection(db, "productos"), {
+        nombre,
+        descripcion,
+        precio,
+        imagenURL: url,
+        createdAt: serverTimestamp()
+      });
+
+      alert("Producto agregado exitosamente!");
+      // Limpiar campos
+      document.getElementById("prod-name").value = "";
+      document.getElementById("prod-desc").value = "";
+      document.getElementById("prod-price").value = "";
+      imgInput.value = "";
+
+      // Recargar productos
+      loadProducts();
+    } catch (e) {
+      alert("Error al subir imagen o guardar producto: " + e.message);
+    }
+  };
+
+  // Mostrar/Ocultar panel admin segun usuario
+  onAuthStateChanged(auth, user => {
+    if(user) {
+      authButtons.style.display = "none";
+      userInfo.style.display = "block";
+      userEmailDisplay.textContent = user.email;
+      if(user.email === ADMIN_EMAIL) {
+        adminPanel.style.display = "block";
+      } else {
+        adminPanel.style.display = "none";
+      }
+      loadProducts();
+    } else {
+      authButtons.style.display = "block";
+      userInfo.style.display = "none";
+      adminPanel.style.display = "none";
+      productList.innerHTML = "<p>Por favor inicia sesión para ver productos.</p>";
+      cart = [];
+      renderCart();
+    }
+  });
+
+  // Cargar productos inicial
+  loadProducts();
+
+</script>
+
+</body>
+</html>
