@@ -1,92 +1,109 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tienda Online Electrónica</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Detailing Technologies - Tienda</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
       padding: 0;
-      background: #f8f8f8;
+      background: url("WhatsApp Image 2025-02-15 at 9.14.47 AM (2).jpeg") no-repeat center center fixed;
+      background-size: cover;
+      color: #000;
     }
+
     header, footer {
-      background: #333;
-      color: #fff;
+      background: rgba(255, 255, 255, 0.8);
       padding: 1em;
       text-align: center;
     }
+
+    header h1 {
+      color: #2a72b5;
+      font-size: 2em;
+    }
+
     .contenedor-productos {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 2em;
       padding: 2em;
+      gap: 2em;
+      background-color: rgba(255, 255, 255, 0.8);
     }
+
     .producto {
-      background: white;
-      border-radius: 10px;
+      background: #ffffffee;
+      border-radius: 15px;
       padding: 1em;
-      width: 250px;
-      box-shadow: 0 0 10px #ccc;
+      width: 280px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
       text-align: center;
     }
+
     .producto img {
       width: 100%;
-      border-radius: 5px;
+      border-radius: 10px;
     }
+
     button {
-      background: green;
+      background: #2a72b5;
       color: white;
       border: none;
-      padding: 0.5em 1em;
+      padding: 0.6em 1.2em;
+      font-size: 1em;
       cursor: pointer;
-      border-radius: 5px;
+      border-radius: 8px;
       margin-top: 1em;
     }
+
     .carrito {
       background: #fff;
-      padding: 1em;
-      margin: 2em;
-      border: 1px solid #ccc;
+      padding: 2em;
+      margin: 2em auto;
+      width: 80%;
+      max-width: 600px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+    }
+
+    .carrito h2 {
+      color: #2a72b5;
     }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>Tienda Online Electrónica</h1>
+  <h1>Detailing Technologies</h1>
+  <p>¡Arma tus proyectos con el mejor kit de Arduino!</p>
 </header>
 
 <div class="contenedor-productos">
   <div class="producto">
-    <img src="arduino1.jpg" alt="Kit de Arduino en caja">
-    <h3>Kit de Arduino en caja</h3>
-    <p>1.000,00 HNL</p>
-    <button onclick="agregarAlCarrito('Kit de Arduino en caja', 1000)">Agregar al carrito</button>
-  </div>
-  <div class="producto">
-    <img src="arduino2.jpg" alt="Kit de Arduino Básico">
-    <h3>Kit de Arduino Básico</h3>
-    <p>550,00 HNL</p>
-    <button onclick="agregarAlCarrito('Kit de Arduino Básico', 550)">Agregar al carrito</button>
+    <img src="arduino2.jpg" alt="Kit Arduino Básico" />
+    <h3>Kit Arduino Básico</h3>
+    <p><strong>L700.00</strong></p>
+    <button onclick="agregarAlCarrito('Kit Arduino Básico', 700)">Agregar al carrito</button>
   </div>
 </div>
 
 <div class="carrito" id="carrito">
   <h2>Carrito de Compras</h2>
   <ul id="lista-carrito"></ul>
-  <p><strong>Total:</strong> <span id="total">0</span> HNL</p>
+  <p><strong>Total:</strong> <span id="total">0</span> L</p>
   <button onclick="enviarPedido()">Comprar por WhatsApp</button>
 </div>
 
 <footer>
-  <p>&copy; 2025 Tienda Electrónica</p>
+  <p>Contáctanos: detailingtechnologies@gmail.com | WhatsApp: 9275-8062</p>
 </footer>
 
 <script>
   const carrito = [];
+
   function agregarAlCarrito(nombre, precio) {
     carrito.push({ nombre, precio });
     mostrarCarrito();
@@ -97,9 +114,9 @@
     const totalElem = document.getElementById('total');
     lista.innerHTML = '';
     let total = 0;
-    carrito.forEach((item, index) => {
+    carrito.forEach(item => {
       total += item.precio;
-      lista.innerHTML += `<li>${item.nombre} - ${item.precio} HNL</li>`;
+      lista.innerHTML += `<li>${item.nombre} - L${item.precio}</li>`;
     });
     totalElem.textContent = total;
   }
@@ -111,10 +128,10 @@
     }
     let mensaje = "Hola, quiero comprar los siguientes productos:%0A";
     carrito.forEach(item => {
-      mensaje += `- ${item.nombre} (${item.precio} HNL)%0A`;
+      mensaje += `- ${item.nombre} (L${item.precio})%0A`;
     });
     const total = carrito.reduce((sum, item) => sum + item.precio, 0);
-    mensaje += `%0ATotal: ${total} HNL`;
+    mensaje += `%0ATotal: L${total}`;
 
     const numeroWhatsApp = "50492758062";
     const url = `https://wa.me/${numeroWhatsApp}?text=${mensaje}`;
@@ -124,7 +141,3 @@
 
 </body>
 </html>
-
-</body>
-</html>
-
