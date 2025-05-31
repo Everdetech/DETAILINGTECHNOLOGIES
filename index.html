@@ -11,14 +11,12 @@
       margin: 0;
       padding: 0;
     }
-
     header {
       background-color: #222;
       color: white;
       padding: 20px;
       text-align: center;
     }
-
     section.card {
       background: white;
       margin: 30px auto;
@@ -27,7 +25,6 @@
       max-width: 800px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
     .product {
       margin-bottom: 20px;
       border-bottom: 1px solid #ddd;
@@ -36,21 +33,17 @@
       gap: 15px;
       align-items: center;
     }
-
     .product img {
       width: 150px;
       border-radius: 10px;
       object-fit: contain;
     }
-
     footer {
       background-color: #222;
       color: white;
       text-align: center;
       padding: 10px;
     }
-
-    /* Estilos para panel admin */
     #admin-panel {
       background: #fff;
       border-radius: 10px;
@@ -59,7 +52,6 @@
       padding: 20px;
       box-shadow: 0 0 15px rgba(0,0,0,0.15);
     }
-
     #admin-panel input, 
     #admin-panel textarea {
       width: 100%;
@@ -71,7 +63,6 @@
       font-size: 14px;
       font-family: inherit;
     }
-
     #admin-panel button.btn {
       background-color: #222;
       color: white;
@@ -82,178 +73,220 @@
       font-size: 15px;
       margin-top: 10px;
     }
-
     #admin-panel button.btn:hover {
       background-color: #444;
+    }
+    /* Estilos del modal */
+    #loginModal {
+      display: none; 
+      position: fixed; 
+      z-index: 1000; 
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      overflow: auto; 
+      background-color: rgba(0,0,0,0.5);
+    }
+    #loginModalContent {
+      background-color: white;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 350px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    #loginModalContent input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    #loginModalContent button {
+      padding: 10px 20px;
+      border: none;
+      background-color: #222;
+      color: white;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    #loginModalContent button:hover {
+      background-color: #444;
+    }
+    #loginError {
+      color: red;
+      font-size: 14px;
+      margin-top: 5px;
+      height: 18px;
+    }
+    /* Botón login visible */
+    #btnLoginShow {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      background: #222;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 1100;
+    }
+    #btnLogout {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      background: #a33;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 1100;
+      display: none;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>DetailingTechnologies</h1>
-    <p>Productos tecnológicos a tu alcance</p>
-  </header>
+<header>
+  <h1>DetailingTechnologies</h1>
+  <p>Productos tecnológicos a tu alcance</p>
+</header>
 
-  <section class="card" id="productos">
-    <h2>Productos</h2>
-    <!-- Aquí se agregan los productos dinámicamente -->
-  </section>
+<section class="card" id="productos">
+  <h2>Productos</h2>
+  <!-- Productos se agregan aquí -->
+</section>
 
-  <!-- Panel oculto para administrar, solo visible si estás autorizado -->
-  <div id="admin-panel" style="display:none;"></div>
+<!-- Panel admin oculto -->
+<div id="admin-panel" style="display:none;"></div>
 
-  <footer>
-    <p>© 2025 DetailingTechnologies - Todos los derechos reservados</p>
-  </footer>
+<!-- Botón para abrir login -->
+<button id="btnLoginShow">Iniciar Sesión</button>
+<button id="btnLogout">Cerrar Sesión</button>
 
-  <script>
-    const claveAcceso = "TUTITAOLIVER25";
-    const productosSection = document.getElementById("productos");
-    const adminPanel = document.getElementById("admin-panel");
+<!-- Modal login -->
+<div id="loginModal">
+  <div id="loginModalContent">
+    <h2>Iniciar sesión</h2>
+    <input type="email" id="email" placeholder="Correo electrónico" />
+    <input type="password" id="password" placeholder="Contraseña" />
+    <div id="loginError"></div>
+    <button id="btnLogin">Entrar</button>
+  </div>
+</div>
 
-    // Productos almacenados localmente (puedes cargar desde servidor si quieres)
-    let productos = JSON.parse(localStorage.getItem("productos")) || [
-      {
-        imagen: "Users/evers/Pictures/UP/UP.jpg",
-        nombre: "ARDUINO UNO R3 SMD",
-        descripcion: "Placa compatible para proyectos electrónicos, ideal para aprender robótica y automatización.",
-        precio: "L 450"
-      }
-    ];
+<footer>
+  <p>© 2025 DetailingTechnologies - Todos los derechos reservados</p>
+</footer>
 
-    // Datos de contacto (WhatsApp y dirección)
-    let contacto = JSON.parse(localStorage.getItem("contacto")) || {
-      whatsapp: "92758062",
-      direccion: "Detalle tu dirección aquí"
-    };
+<script>
+  const productosSection = document.getElementById("productos");
+  const adminPanel = document.getElementById("admin-panel");
+  const loginModal = document.getElementById("loginModal");
+  const btnLoginShow = document.getElementById("btnLoginShow");
+  const btnLogout = document.getElementById("btnLogout");
+  const loginError = document.getElementById("loginError");
 
-    function mostrarProductos() {
-      productosSection.innerHTML = "<h2>Productos</h2>";
-      productos.forEach((prod, i) => {
-        const div = document.createElement("div");
-        div.className = "product";
-        div.innerHTML = `
-          <img src="${prod.imagen}" alt="${prod.nombre}" />
-          <div>
-            <h3>${prod.nombre}</h3>
-            <p>${prod.descripcion}</p>
-            <p><strong>Precio:</strong> ${prod.precio}</p>
-          </div>
-        `;
-        productosSection.appendChild(div);
-      });
+  // Datos login
+  const ADMIN_EMAIL = "detailingtechnologies@gmail.com";
+  const ADMIN_PASSWORD = "Tutitaoliver25199804";
 
-      // Mostrar contacto abajo
-      const contactoDiv = document.createElement("div");
-      contactoDiv.style.marginTop = "30px";
-      contactoDiv.innerHTML = `
-        <h2>Contacto</h2>
-        <p><strong>WhatsApp:</strong> ${contacto.whatsapp}</p>
-        <p><strong>Dirección:</strong> ${contacto.direccion}</p>
-      `;
-      productosSection.appendChild(contactoDiv);
+  // Productos y contacto (guardados en localStorage)
+  let productos = JSON.parse(localStorage.getItem("productos")) || [
+    {
+      imagen: "Users/evers/Pictures/UP/UP.jpg",
+      nombre: "ARDUINO UNO R3 SMD",
+      descripcion: "Placa compatible para proyectos electrónicos, ideal para aprender robótica y automatización.",
+      precio: "L 450"
     }
+  ];
 
+  let contacto = JSON.parse(localStorage.getItem("contacto")) || {
+    whatsapp: "92758062",
+    direccion: "Detalle tu dirección aquí"
+  };
+
+  // Mostrar productos + contacto
+  function mostrarProductos() {
+    productosSection.innerHTML = "<h2>Productos</h2>";
+    productos.forEach((prod) => {
+      const div = document.createElement("div");
+      div.className = "product";
+      div.innerHTML = `
+        <img src="${prod.imagen}" alt="${prod.nombre}" />
+        <div>
+          <h3>${prod.nombre}</h3>
+          <p>${prod.descripcion}</p>
+          <p><strong>Precio:</strong> ${prod.precio}</p>
+        </div>
+      `;
+      productosSection.appendChild(div);
+    });
+
+    const contactoDiv = document.createElement("div");
+    contactoDiv.style.marginTop = "30px";
+    contactoDiv.innerHTML = `
+      <h2>Contacto</h2>
+      <p><strong>WhatsApp:</strong> ${contacto.whatsapp}</p>
+      <p><strong>Dirección:</strong> ${contacto.direccion}</p>
+    `;
+    productosSection.appendChild(contactoDiv);
+  }
+
+  mostrarProductos();
+
+  // Función para activar panel admin (MODIPRO)
+  function activarModoAdmin() {
+    adminPanel.style.display = "block";
+    adminPanel.innerHTML = `
+      <section class="card">
+        <h2>Panel MODIPRO</h2>
+
+        <h3>Agregar producto</h3>
+        <input type="file" id="img-input" accept="image/*" />
+        <input type="text" id="nombre" placeholder="Nombre del producto" />
+        <textarea id="descripcion" placeholder="Descripción"></textarea>
+        <input type="text" id="precio" placeholder="Precio" />
+        <button class="btn" onclick="agregarProducto()">Agregar</button>
+
+        <h3>Actualizar contacto</h3>
+        <input type="text" id="nuevo-wa" placeholder="Nuevo número de WhatsApp (sin + ni espacios)" value="${contacto.whatsapp}" />
+        <input type="text" id="nueva-direccion" placeholder="Dirección o ubicación" value="${contacto.direccion}" />
+        <button class="btn" onclick="actualizarContacto()">Actualizar contacto</button>
+      </section>
+    `;
+
+    btnLoginShow.style.display = "none";
+    btnLogout.style.display = "block";
+  }
+
+  // Función para desactivar modo admin
+  function cerrarSesion() {
+    localStorage.removeItem("loggedIn");
+    adminPanel.style.display = "none";
+    btnLoginShow.style.display = "block";
+    btnLogout.style.display = "none";
     mostrarProductos();
+  }
 
-    // Verifica si ya tienes acceso autorizado
-    if (localStorage.getItem("adminToken") === "autorizado") {
-      activarModoAdmin();
-    } else {
-      // Te pregunta si quieres activar modo admin
-      const deseaAcceder = confirm("¿Eres administrador y quieres activar MODIPRO?");
-      if (deseaAcceder) {
-        const clave = prompt("Ingresa la clave de administrador:");
-        if (clave === claveAcceso) {
-          localStorage.setItem("adminToken", "autorizado");
-          activarModoAdmin();
-        } else {
-          alert("Clave incorrecta");
-        }
-      }
+  // Agregar producto
+  function agregarProducto() {
+    const inputImg = document.getElementById("img-input");
+    const nombre = document.getElementById("nombre").value.trim();
+    const descripcion = document.getElementById("descripcion").value.trim();
+    const precio = document.getElementById("precio").value.trim();
+
+    if (!inputImg.files[0]) {
+      alert("Por favor, selecciona una imagen.");
+      return;
+    }
+    if (!nombre || !descripcion || !precio) {
+      alert("Por favor, completa todos los campos.");
+      return;
     }
 
-    function activarModoAdmin() {
-      adminPanel.style.display = "block";
-      adminPanel.innerHTML = `
-        <section class="card">
-          <h2>Panel MODIPRO</h2>
-
-          <h3>Agregar producto</h3>
-          <input type="file" id="img-input" accept="image/*" />
-          <input type="text" id="nombre" placeholder="Nombre del producto" />
-          <textarea id="descripcion" placeholder="Descripción"></textarea>
-          <input type="text" id="precio" placeholder="Precio" />
-          <button class="btn" onclick="agregarProducto()">Agregar</button>
-
-          <h3>Actualizar contacto</h3>
-          <input type="text" id="nuevo-wa" placeholder="Nuevo número de WhatsApp (sin + ni espacios)" value="${contacto.whatsapp}" />
-          <input type="text" id="nueva-direccion" placeholder="Dirección o ubicación" value="${contacto.direccion}" />
-          <button class="btn" onclick="actualizarContacto()">Actualizar contacto</button>
-
-          <button class="btn" style="background:#a33; margin-top:20px;" onclick="cerrarSesion()">Cerrar MODIPRO</button>
-        </section>
-      `;
-    }
-
-    function agregarProducto() {
-      const inputImg = document.getElementById("img-input");
-      const nombre = document.getElementById("nombre").value.trim();
-      const descripcion = document.getElementById("descripcion").value.trim();
-      const precio = document.getElementById("precio").value.trim();
-
-      if (!inputImg.files[0]) {
-        alert("Por favor, selecciona una imagen.");
-        return;
-      }
-      if (!nombre || !descripcion || !precio) {
-        alert("Por favor, completa todos los campos.");
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const imagenData = e.target.result;
-        productos.push({
-          imagen: imagenData,
-          nombre,
-          descripcion,
-          precio
-        });
-        localStorage.setItem("productos", JSON.stringify(productos));
-        mostrarProductos();
-        alert("Producto agregado correctamente.");
-        // Limpia campos
-        document.getElementById("img-input").value = "";
-        document.getElementById("nombre").value = "";
-        document.getElementById("descripcion").value = "";
-        document.getElementById("precio").value = "";
-      };
-      reader.readAsDataURL(inputImg.files[0]);
-    }
-
-    function actualizarContacto() {
-      const nuevoWa = document.getElementById("nuevo-wa").value.trim();
-      const nuevaDireccion = document.getElementById("nueva-direccion").value.trim();
-
-      if (!nuevoWa || !nuevaDireccion) {
-        alert("Por favor, completa todos los campos de contacto.");
-        return;
-      }
-
-      contacto.whatsapp = nuevoWa;
-      contacto.direccion = nuevaDireccion;
-      localStorage.setItem("contacto", JSON.stringify(contacto));
-      mostrarProductos();
-      alert("Contacto actualizado correctamente.");
-    }
-
-    function cerrarSesion() {
-      localStorage.removeItem("adminToken");
-      alert("Has cerrado MODIPRO.");
-      location.reload();
-    }
-  </script>
-</body>
-</html>
