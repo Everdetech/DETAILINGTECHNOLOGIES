@@ -38,6 +38,26 @@
       border-radius: 10px;
       object-fit: contain;
     }
+    .product .actions {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+    }
+    .product .actions button {
+      background-color: #a33;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .product .actions button.edit {
+      background-color: #222;
+    }
+    .product .actions button:hover {
+      opacity: 0.8;
+    }
     footer {
       background-color: #222;
       color: white;
@@ -118,7 +138,7 @@
     #authModalContent button:hover {
       background-color: #444;
     }
-    #authError {
+    #authError, #authErrorReg {
       color: red;
       font-size: 14px;
       margin-top: 5px;
@@ -232,28 +252,19 @@
   // ---------------------------------------
   //  ELEMENTOS DEL DOM
   // ---------------------------------------
-  // Vista pública
   const productosSection = document.getElementById("productos");
-  // Panel admin
   const adminPanel       = document.getElementById("admin-panel");
-  // Modal autenticación
   const authModal        = document.getElementById("authModal");
-  const authModalContent = document.getElementById("authModalContent");
-  // Botones flotantes
   const btnLoginShow     = document.getElementById("btnLoginShow");
   const btnLogout        = document.getElementById("btnLogout");
-  // Tabs
   const tabLogin         = document.getElementById("tabLogin");
   const tabRegister      = document.getElementById("tabRegister");
-  // Formularios dentro del modal
   const loginFormDiv     = document.getElementById("loginForm");
   const registerFormDiv  = document.getElementById("registerForm");
-  // Campos Login
   const loginEmail       = document.getElementById("loginEmail");
   const loginPassword    = document.getElementById("loginPassword");
   const authError        = document.getElementById("authError");
   const btnLogin         = document.getElementById("btnLogin");
-  // Campos Registrarse
   const regEmail         = document.getElementById("regEmail");
   const regPassword      = document.getElementById("regPassword");
   const regPasswordConfirm = document.getElementById("regPasswordConfirm");
@@ -263,23 +274,20 @@
   // ---------------------------------------
   //  DATOS INICIALES (localStorage)
   // ---------------------------------------
-  // Lista de productos ya almacenados
   let productos = JSON.parse(localStorage.getItem("productos")) || [
     {
+      id: Date.now(),
       imagen: "Users/evers/Pictures/UP/UP.jpg",
       nombre: "ARDUINO UNO R3 SMD",
       descripcion: "Placa compatible para proyectos electrónicos, ideal para aprender robótica y automatización.",
       precio: "L 450"
     }
   ];
-  // Datos de contacto
   let contacto = JSON.parse(localStorage.getItem("contacto")) || {
     whatsapp: "92758062",
     direccion: "Detalle tu dirección aquí"
   };
-  // Lista de usuarios registrados (excluye al admin, que es fijo)
   let users = JSON.parse(localStorage.getItem("users")) || [];
-  // El “role” actual: null / "admin" / "user"
   let currentRole = localStorage.getItem("role") || null;
 
   // ---------------------------------------
@@ -298,6 +306,15 @@
           <p><strong>Precio:</strong> ${prod.precio}</p>
         </div>
       `;
+      if (currentRole === "admin") {
+        const actions = document.createElement("div");
+        actions.className = "actions";
+        actions.innerHTML = `
+          <button class="edit" onclick="editarProducto(${prod.id})">Editar</button>
+          <button onclick="borrarProducto(${prod.id})">Borrar</button>
+        `;
+        div.appendChild(actions);
+      }
       productosSection.appendChild(div);
     });
     const contactoDiv = document.createElement("div");
@@ -310,7 +327,6 @@
     productosSection.appendChild(contactoDiv);
   }
 
-  // Inicializar vista pública
   mostrarProductos();
 
   // ---------------------------------------
@@ -322,25 +338,7 @@
     btnLoginShow.style.display = "none";
     btnLogout.style.display = "block";
     adminPanel.style.display = "block";
-    adminPanel.innerHTML = `
-      <section class="card">
-        <h2>Panel MODIPRO</h2>
-
-        <h3>Agregar producto</h3>
-        <input type="file" id="img-input" accept="image/*" />
-        <input type="text" id="nombre" placeholder="Nombre del producto" />
-        <textarea id="descripcion" placeholder="Descripción"></textarea>
-        <input type="text" id="precio" placeholder="Precio" />
-        <button class="btn" onclick="agregarProducto()">Agregar</button>
-        <p id="msgProducto" style="color:green; font-size:14px; height:18px;"></p>
-
-        <h3>Actualizar contacto</h3>
-        <input type="text" id="nuevo-wa" placeholder="Nuevo WhatsApp" value="${contacto.whatsapp}" />
-        <input type="text" id="nueva-direccion" placeholder="Nueva dirección" value="${contacto.direccion}" />
-        <button class="btn" onclick="actualizarContacto()">Actualizar contacto</button>
-        <p id="msgContacto" style="color:green; font-size:14px; height:18px;"></p>
-      </section>
-    `;
+    renderAdminPanel();
   }
 
   // ---------------------------------------
@@ -369,6 +367,49 @@
   btnLogout.addEventListener("click", cerrarSesion);
 
   // ---------------------------------------
+  //  FUNCIONES PARA RENDERIZAR PANEL ADMIN
+  // ---------------------------------------
+  function renderAdminPanel(editId = null) {
+    // Si se pasa editId, pre-llenar formulario con esos datos
+    let editData = null;
+    if (editId !== null) {
+      editData = productos.find(p => p.id === editId);
+    }
+
+    adminPanel.innerHTML = `
+      <section class="card">
+        <h2>Panel MODIPRO</h2>
+
+        <h3>${editData ? "Editar producto" : "Agregar producto"}</h3>
+        <input type="file" id="img-input" accept="image/*" ${editData ? "" : ""} />
+        <input type="text" id="nombre" placeholder="Nombre del producto" value="${editData ? editData.nombre : ""}" />
+        <textarea id="descripcion" placeholder="Descripción">${editData ? editData.descripcion : ""}</textarea>
+        <input type="text" id="precio" placeholder="Precio" value="${editData ? editData.precio : ""}" />
+        <button class="btn" onclick="${editData ? `updateProducto(${editId})` : "agregarProducto()"}">
+          ${editData ? "Guardar cambios" : "Agregar"}
+        </button>
+        <button class="btn" style="background:#888; margin-left:8px;" onclick="cancelEdit()">
+          ${editData ? "Cancelar" : ""}
+        </button>
+        <p id="msgProducto" style="color:green; font-size:14px; height:18px;"></p>
+
+        <h3>Actualizar contacto</h3>
+        <input type="text" id="nuevo-wa" placeholder="Nuevo WhatsApp" value="${contacto.whatsapp}" />
+        <input type="text" id="nueva-direccion" placeholder="Nueva dirección" value="${contacto.direccion}" />
+        <button class="btn" onclick="actualizarContacto()">Actualizar contacto</button>
+        <p id="msgContacto" style="color:green; font-size:14px; height:18px;"></p>
+      </section>
+    `;
+  }
+
+  // ---------------------------------------
+  //  FUNCIÓN: Cancelar edición de producto
+  // ---------------------------------------
+  function cancelEdit() {
+    renderAdminPanel(null);
+  }
+
+  // ---------------------------------------
   //  FUNCIÓN: Abrir modal de login/registro
   // ---------------------------------------
   btnLoginShow.addEventListener("click", () => {
@@ -379,7 +420,6 @@
     regEmail.value = "";
     regPassword.value = "";
     regPasswordConfirm.value = "";
-    // Empezamos en la pestaña Login
     showLoginTab();
     authModal.style.display = "block";
   });
@@ -463,18 +503,16 @@
       authErrorReg.textContent = "Las contraseñas no coinciden.";
       return;
     }
-    // Verificar si ya existe el email entre usuarios registrados
+    // Verificar si ya existe el email
     const usuariosGuardados = JSON.parse(localStorage.getItem("users")) || [];
     if (usuariosGuardados.some(u => u.email === email)) {
       authErrorReg.textContent = "El correo ya está en uso.";
       return;
     }
-    // Guardar nuevo usuario (sin rol admin)
     usuariosGuardados.push({ email, password: pass });
     localStorage.setItem("users", JSON.stringify(usuariosGuardados));
     authErrorReg.style.color = "green";
     authErrorReg.textContent = "Registro exitoso. Ahora inicia sesión.";
-    // Limpiar campos
     regEmail.value = "";
     regPassword.value = "";
     regPasswordConfirm.value = "";
@@ -520,7 +558,9 @@
     const reader = new FileReader();
     reader.onload = function(e) {
       const imagenData = e.target.result;
+      const nuevoId = Date.now();
       productos.push({
+        id: nuevoId,
         imagen: imagenData,
         nombre,
         descripcion,
@@ -530,13 +570,76 @@
       mostrarProductos();
       msgProd.style.color = "green";
       msgProd.textContent = "Producto agregado.";
-      // Limpiar campos
-      inputImg.value = "";
+      document.getElementById("img-input").value = "";
       document.getElementById("nombre").value = "";
       document.getElementById("descripcion").value = "";
       document.getElementById("precio").value = "";
+      renderAdminPanel();
     };
     reader.readAsDataURL(inputImg.files[0]);
+  }
+
+  // ---------------------------------------
+  //  FUNCIÓN: Borrar producto (solo admin)
+  // ---------------------------------------
+  function borrarProducto(id) {
+    productos = productos.filter(p => p.id !== id);
+    localStorage.setItem("productos", JSON.stringify(productos));
+    mostrarProductos();
+    renderAdminPanel();
+  }
+
+  // ---------------------------------------
+  //  FUNCIÓN: Editar producto (solo admin)
+  // ---------------------------------------
+  function editarProducto(id) {
+    renderAdminPanel(id);
+  }
+
+  // ---------------------------------------
+  //  FUNCIÓN: Guardar cambios de producto editado (solo admin)
+  // ---------------------------------------
+  function updateProducto(id) {
+    const inputImg    = document.getElementById("img-input");
+    const nombre      = document.getElementById("nombre").value.trim();
+    const descripcion = document.getElementById("descripcion").value.trim();
+    const precio      = document.getElementById("precio").value.trim();
+    const msgProd     = document.getElementById("msgProducto");
+    msgProd.textContent = "";
+
+    if (!nombre || !descripcion || !precio) {
+      msgProd.style.color = "red";
+      msgProd.textContent = "Completa todos los campos.";
+      return;
+    }
+    const prodIndex = productos.findIndex(p => p.id === id);
+    if (prodIndex === -1) {
+      msgProd.style.color = "red";
+      msgProd.textContent = "Producto no encontrado.";
+      return;
+    }
+    // Si seleccionaron una nueva imagen, actualizarla
+    if (inputImg.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        productos[prodIndex].imagen = e.target.result;
+        finalizarEdicion();
+      };
+      reader.readAsDataURL(inputImg.files[0]);
+    } else {
+      finalizarEdicion();
+    }
+
+    function finalizarEdicion() {
+      productos[prodIndex].nombre = nombre;
+      productos[prodIndex].descripcion = descripcion;
+      productos[prodIndex].precio = precio;
+      localStorage.setItem("productos", JSON.stringify(productos));
+      mostrarProductos();
+      msgProd.style.color = "green";
+      msgProd.textContent = "Producto actualizado.";
+      renderAdminPanel();
+    }
   }
 
   // ---------------------------------------
