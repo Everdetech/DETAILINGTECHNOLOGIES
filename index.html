@@ -2,251 +2,129 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DetailingTechnologies</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tienda Online Electrónica</title>
   <style>
     body {
+      font-family: sans-serif;
       margin: 0;
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(to bottom right, #eee, #ccc);
+      padding: 0;
+      background: #f8f8f8;
     }
-
-    header {
-      background-color: #FFDD55;
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .social-icons i, .cart {
-      margin: 0 10px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-
-    .search-bar {
-      display: flex;
-      align-items: center;
-      background: white;
-      border-radius: 10px;
-      border: 1px solid black;
-      padding: 5px;
-      width: 300px;
-    }
-
-    .search-bar input {
-      border: none;
-      outline: none;
-      flex: 1;
-      padding: 5px;
-    }
-
-    .sidebar {
-      position: absolute;
-      top: 60px;
-      left: 0;
-      width: 160px;
-      height: calc(100vh - 60px);
-      background-color: #5BE9F5;
-      padding: 20px 10px;
-      box-sizing: border-box;
-    }
-
-    .sidebar button {
-      background-color: #d4f7ff;
-      border: 2px solid #000;
-      border-radius: 20px;
-      padding: 10px;
-      margin-bottom: 20px;
-      width: 100%;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    main {
-      margin-left: 180px;
-      padding: 20px;
-    }
-
-    h1 {
-      font-size: 2.5em;
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .productos-btn {
-      display: inline-block;
-      margin: 0 auto;
-      border: 2px solid #000;
-      border-radius: 20px;
-      padding: 10px 20px;
-      background-color: #f9f9f9;
-      font-weight: bold;
+    header, footer {
+      background: #333;
+      color: #fff;
+      padding: 1em;
       text-align: center;
     }
-
-    .producto {
+    .contenedor-productos {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
-      margin-top: 30px;
+      flex-wrap: wrap;
+      gap: 2em;
+      padding: 2em;
     }
-
-    .card {
+    .producto {
       background: white;
       border-radius: 10px;
-      padding: 15px;
-      margin: 10px;
-      width: 200px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 1em;
+      width: 250px;
+      box-shadow: 0 0 10px #ccc;
       text-align: center;
     }
-
-    .card img {
+    .producto img {
       width: 100%;
-      border-radius: 10px;
-    }
-
-    .card h2 {
-      font-size: 1.1em;
-      margin: 10px 0 5px;
-    }
-
-    .card p {
-      font-weight: bold;
-      color: #333;
-    }
-
-    footer {
-      margin-top: 40px;
-      text-align: center;
-      font-size: 0.9em;
-      color: #666;
-    }
-
-    .modipro-panel {
-      display: none;
-      margin-top: 40px;
-      padding: 20px;
-      background-color: #fff6c4;
-      border: 2px dashed #333;
-      border-radius: 15px;
-    }
-
-    .modipro-panel h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .modipro-panel label, .modipro-panel input {
-      display: block;
-      margin: 10px auto;
-      width: 80%;
-      max-width: 400px;
-    }
-
-    .modipro-panel input {
-      padding: 8px;
-      border: 1px solid #999;
       border-radius: 5px;
     }
-
-    .modipro-panel button {
-      display: block;
-      margin: 20px auto;
-      padding: 10px 20px;
-      background-color: #ffdd55;
+    button {
+      background: green;
+      color: white;
       border: none;
-      border-radius: 10px;
-      font-weight: bold;
+      padding: 0.5em 1em;
       cursor: pointer;
+      border-radius: 5px;
+      margin-top: 1em;
+    }
+    .carrito {
+      background: #fff;
+      padding: 1em;
+      margin: 2em;
+      border: 1px solid #ccc;
     }
   </style>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
-  <header>
-    <div class="social-icons">
-      <i class="fab fa-instagram"></i>
-      <i class="fab fa-facebook-f"></i>
-      <i class="fab fa-twitter"></i>
-      <i class="fas fa-envelope"></i>
-    </div>
-    <div class="search-bar">
-      <input type="text" placeholder="Buscar productos...">
-      <i class="fas fa-search"></i>
-    </div>
-    <div class="cart">
-      <i class="fas fa-shopping-cart"></i>
-    </div>
-  </header>
 
-  <div class="sidebar">
-    <button>Categorías</button>
-    <button>Contacto:<br>Servicio: Envíos a domicilio</button>
+<header>
+  <h1>Tienda Online Electrónica</h1>
+</header>
+
+<div class="contenedor-productos">
+  <div class="producto">
+    <img src="arduino1.jpg" alt="Kit de Arduino en caja">
+    <h3>Kit de Arduino en caja</h3>
+    <p>1.000,00 HNL</p>
+    <button onclick="agregarAlCarrito('Kit de Arduino en caja', 1000)">Agregar al carrito</button>
   </div>
+  <div class="producto">
+    <img src="arduino2.jpg" alt="Kit de Arduino Básico">
+    <h3>Kit de Arduino Básico</h3>
+    <p>550,00 HNL</p>
+    <button onclick="agregarAlCarrito('Kit de Arduino Básico', 550)">Agregar al carrito</button>
+  </div>
+</div>
 
-  <main>
-    <h1>Tecnología a tu alcance</h1>
-    <div class="productos-btn">Productos</div>
+<div class="carrito" id="carrito">
+  <h2>Carrito de Compras</h2>
+  <ul id="lista-carrito"></ul>
+  <p><strong>Total:</strong> <span id="total">0</span> HNL</p>
+  <button onclick="enviarPedido()">Comprar por WhatsApp</button>
+</div>
 
-    <div class="producto">
-      <div class="card">
-        <img src="https://i.imgur.com/Z0E2G5p.jpeg" alt="Kit Arduino">
-        <h2>Kit de Arduino Básico</h2>
-        <p>Precio: 550 Lps</p>
-      </div>
-    </div>
+<footer>
+  <p>&copy; 2025 Tienda Electrónica</p>
+</footer>
 
-    <div id="modipro-login">
-      <h2>Ingreso a MODIPRO</h2>
-      <input type="password" id="modipro-pass" placeholder="Contraseña">
-      <button onclick="accederModipro()">Ingresar</button>
-    </div>
+<script>
+  const carrito = [];
+  function agregarAlCarrito(nombre, precio) {
+    carrito.push({ nombre, precio });
+    mostrarCarrito();
+  }
 
-    <div class="modipro-panel" id="modipro-panel">
-      <h2>Panel MODIPRO</h2>
-      <label for="nombre">Nombre del producto:</label>
-      <input type="text" id="nombre" placeholder="Kit de Arduino Básico">
+  function mostrarCarrito() {
+    const lista = document.getElementById('lista-carrito');
+    const totalElem = document.getElementById('total');
+    lista.innerHTML = '';
+    let total = 0;
+    carrito.forEach((item, index) => {
+      total += item.precio;
+      lista.innerHTML += `<li>${item.nombre} - ${item.precio} HNL</li>`;
+    });
+    totalElem.textContent = total;
+  }
 
-      <label for="precio">Precio:</label>
-      <input type="text" id="precio" placeholder="550 Lps">
-
-      <label for="imagen">URL de la imagen:</label>
-      <input type="text" id="imagen" placeholder="https://...">
-
-      <button onclick="actualizarProducto()">Actualizar producto</button>
-    </div>
-  </main>
-
-  <footer>
-    &copy; 2025 DetailingTechnologies - Todos los derechos reservados.
-  </footer>
-
-  <script>
-    function actualizarProducto() {
-      const nombre = document.getElementById('nombre').value;
-      const precio = document.getElementById('precio').value;
-      const imagen = document.getElementById('imagen').value;
-
-      const producto = document.querySelector('.producto .card');
-      if (nombre) producto.querySelector('h2').innerText = nombre;
-      if (precio) producto.querySelector('p').innerText = `Precio: ${precio}`;
-      if (imagen) producto.querySelector('img').src = imagen;
+  function enviarPedido() {
+    if (carrito.length === 0) {
+      alert("El carrito está vacío.");
+      return;
     }
+    let mensaje = "Hola, quiero comprar los siguientes productos:%0A";
+    carrito.forEach(item => {
+      mensaje += `- ${item.nombre} (${item.precio} HNL)%0A`;
+    });
+    const total = carrito.reduce((sum, item) => sum + item.precio, 0);
+    mensaje += `%0ATotal: ${total} HNL`;
 
-    function accederModipro() {
-      const pass = document.getElementById('modipro-pass').value;
-      const panel = document.getElementById('modipro-panel');
-      if (pass === 'admin123') {
-        panel.style.display = 'block';
-        document.getElementById('modipro-login').style.display = 'none';
-      } else {
-        alert('Contraseña incorrecta');
-      }
-    }
-  </script>
+    const numeroWhatsApp = "50492758062";
+    const url = `https://wa.me/${numeroWhatsApp}?text=${mensaje}`;
+    window.open(url, "_blank");
+  }
+</script>
+
+</body>
+</html>
+
 </body>
 </html>
 
