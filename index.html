@@ -78,8 +78,8 @@
     #admin-panel button.btn:hover {
       background-color: #444;
     }
-    /* Modal de login */
-    #loginModal {
+    /* Modal de login/registro */
+    #authModal {
       display: none;
       position: fixed;
       z-index: 1000;
@@ -88,24 +88,24 @@
       overflow: auto;
       background-color: rgba(0,0,0,0.5);
     }
-    #loginModalContent {
+    #authModalContent {
       background-color: white;
-      margin: 10% auto;
+      margin: 5% auto;
       padding: 20px;
       border-radius: 10px;
-      max-width: 350px;
+      max-width: 400px;
       box-shadow: 0 0 15px rgba(0,0,0,0.3);
       text-align: center;
     }
-    #loginModalContent input {
+    #authModalContent input {
       width: 90%;
       padding: 10px;
-      margin: 10px 0;
+      margin: 8px 0;
       border-radius: 5px;
       border: 1px solid #ccc;
       font-size: 14px;
     }
-    #loginModalContent button {
+    #authModalContent button {
       padding: 10px 20px;
       border: none;
       background-color: #222;
@@ -115,10 +115,10 @@
       cursor: pointer;
       margin-top: 10px;
     }
-    #loginModalContent button:hover {
+    #authModalContent button:hover {
       background-color: #444;
     }
-    #loginError {
+    #authError {
       color: red;
       font-size: 14px;
       margin-top: 5px;
@@ -150,6 +150,25 @@
       z-index: 1100;
       display: none;
     }
+    /* Tabs (Iniciar y Registrar) */
+    .tab-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .tab-buttons button {
+      padding: 8px 16px;
+      border: none;
+      background: #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .tab-buttons button.active {
+      background: #222;
+      color: white;
+    }
   </style>
 </head>
 <body>
@@ -169,17 +188,33 @@
 <div id="admin-panel"></div>
 
 <!-- Botones flotantes -->
-<button id="btnLoginShow">Iniciar Sesión</button>
+<button id="btnLoginShow">Iniciar Sesión / Registrarse</button>
 <button id="btnLogout">Cerrar Sesión</button>
 
-<!-- Modal de login -->
-<div id="loginModal">
-  <div id="loginModalContent">
-    <h2>Iniciar sesión</h2>
-    <input type="email" id="email" placeholder="Correo electrónico" />
-    <input type="password" id="password" placeholder="Contraseña" />
-    <div id="loginError"></div>
-    <button id="btnLogin">Entrar</button>
+<!-- Modal de login/registro -->
+<div id="authModal">
+  <div id="authModalContent">
+    <div class="tab-buttons">
+      <button id="tabLogin" class="active">Iniciar Sesión</button>
+      <button id="tabRegister">Registrarse</button>
+    </div>
+
+    <!-- Formulario de Login -->
+    <div id="loginForm">
+      <input type="email" id="loginEmail" placeholder="Correo electrónico" />
+      <input type="password" id="loginPassword" placeholder="Contraseña" />
+      <div id="authError"></div>
+      <button id="btnLogin">Entrar</button>
+    </div>
+
+    <!-- Formulario de Registro -->
+    <div id="registerForm" style="display:none;">
+      <input type="email" id="regEmail" placeholder="Correo electrónico" />
+      <input type="password" id="regPassword" placeholder="Contraseña" />
+      <input type="password" id="regPasswordConfirm" placeholder="Confirmar contraseña" />
+      <div id="authErrorReg"></div>
+      <button id="btnRegister">Crear cuenta</button>
+    </div>
   </div>
 </div>
 
@@ -197,19 +232,38 @@
   // ---------------------------------------
   //  ELEMENTOS DEL DOM
   // ---------------------------------------
+  // Vista pública
   const productosSection = document.getElementById("productos");
+  // Panel admin
   const adminPanel       = document.getElementById("admin-panel");
-  const loginModal       = document.getElementById("loginModal");
+  // Modal autenticación
+  const authModal        = document.getElementById("authModal");
+  const authModalContent = document.getElementById("authModalContent");
+  // Botones flotantes
   const btnLoginShow     = document.getElementById("btnLoginShow");
   const btnLogout        = document.getElementById("btnLogout");
-  const loginError       = document.getElementById("loginError");
+  // Tabs
+  const tabLogin         = document.getElementById("tabLogin");
+  const tabRegister      = document.getElementById("tabRegister");
+  // Formularios dentro del modal
+  const loginFormDiv     = document.getElementById("loginForm");
+  const registerFormDiv  = document.getElementById("registerForm");
+  // Campos Login
+  const loginEmail       = document.getElementById("loginEmail");
+  const loginPassword    = document.getElementById("loginPassword");
+  const authError        = document.getElementById("authError");
   const btnLogin         = document.getElementById("btnLogin");
-  const emailInput       = document.getElementById("email");
-  const passwordInput    = document.getElementById("password");
+  // Campos Registrarse
+  const regEmail         = document.getElementById("regEmail");
+  const regPassword      = document.getElementById("regPassword");
+  const regPasswordConfirm = document.getElementById("regPasswordConfirm");
+  const authErrorReg     = document.getElementById("authErrorReg");
+  const btnRegister      = document.getElementById("btnRegister");
 
   // ---------------------------------------
   //  DATOS INICIALES (localStorage)
   // ---------------------------------------
+  // Lista de productos ya almacenados
   let productos = JSON.parse(localStorage.getItem("productos")) || [
     {
       imagen: "Users/evers/Pictures/UP/UP.jpg",
@@ -218,11 +272,15 @@
       precio: "L 450"
     }
   ];
-
+  // Datos de contacto
   let contacto = JSON.parse(localStorage.getItem("contacto")) || {
     whatsapp: "92758062",
     direccion: "Detalle tu dirección aquí"
   };
+  // Lista de usuarios registrados (excluye al admin, que es fijo)
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+  // El “role” actual: null / "admin" / "user"
+  let currentRole = localStorage.getItem("role") || null;
 
   // ---------------------------------------
   //  FUNCIÓN: Mostrar productos + contacto
@@ -242,7 +300,6 @@
       `;
       productosSection.appendChild(div);
     });
-
     const contactoDiv = document.createElement("div");
     contactoDiv.style.marginTop = "30px";
     contactoDiv.innerHTML = `
@@ -253,18 +310,17 @@
     productosSection.appendChild(contactoDiv);
   }
 
-  // Llama al cargar la página
+  // Inicializar vista pública
   mostrarProductos();
 
   // ---------------------------------------
   //  FUNCIÓN: Mostrar panel MODIPRO (solo admin)
   // ---------------------------------------
   function activarModoAdmin() {
-    // Ocultar el botón de login, mostrar logout
+    currentRole = "admin";
+    localStorage.setItem("role", "admin");
     btnLoginShow.style.display = "none";
     btnLogout.style.display = "block";
-
-    // Construir contenido del panel admin
     adminPanel.style.display = "block";
     adminPanel.innerHTML = `
       <section class="card">
@@ -279,7 +335,7 @@
         <p id="msgProducto" style="color:green; font-size:14px; height:18px;"></p>
 
         <h3>Actualizar contacto</h3>
-        <input type="text" id="nuevo-wa" placeholder="Nuevo número de WhatsApp" value="${contacto.whatsapp}" />
+        <input type="text" id="nuevo-wa" placeholder="Nuevo WhatsApp" value="${contacto.whatsapp}" />
         <input type="text" id="nueva-direccion" placeholder="Nueva dirección" value="${contacto.direccion}" />
         <button class="btn" onclick="actualizarContacto()">Actualizar contacto</button>
         <p id="msgContacto" style="color:green; font-size:14px; height:18px;"></p>
@@ -291,12 +347,11 @@
   //  FUNCIÓN: Mostrar vista “usuario normal”
   // ---------------------------------------
   function activarModoUsuario() {
-    // Ocultar botón login, mostrar logout
+    currentRole = "user";
+    localStorage.setItem("role", "user");
     btnLoginShow.style.display = "none";
     btnLogout.style.display = "block";
-    // Asegurarse de ocultar panel admin
     adminPanel.style.display = "none";
-    // Ya se verá solamente la lista de productos + contacto
     mostrarProductos();
   }
 
@@ -305,6 +360,7 @@
   // ---------------------------------------
   function cerrarSesion() {
     localStorage.removeItem("role");
+    currentRole = null;
     adminPanel.style.display = "none";
     btnLogout.style.display = "none";
     btnLoginShow.style.display = "block";
@@ -313,47 +369,115 @@
   btnLogout.addEventListener("click", cerrarSesion);
 
   // ---------------------------------------
-  //  FUNCIÓN: Abrir modal de login
+  //  FUNCIÓN: Abrir modal de login/registro
   // ---------------------------------------
   btnLoginShow.addEventListener("click", () => {
-    loginError.textContent = "";
-    emailInput.value = "";
-    passwordInput.value = "";
-    loginModal.style.display = "block";
+    authError.textContent = "";
+    authErrorReg.textContent = "";
+    loginEmail.value = "";
+    loginPassword.value = "";
+    regEmail.value = "";
+    regPassword.value = "";
+    regPasswordConfirm.value = "";
+    // Empezamos en la pestaña Login
+    showLoginTab();
+    authModal.style.display = "block";
   });
 
   // ---------------------------------------
   //  FUNCIÓN: Cerrar modal al hacer clic fuera
   // ---------------------------------------
   window.addEventListener("click", (e) => {
-    if (e.target === loginModal) {
-      loginModal.style.display = "none";
+    if (e.target === authModal) {
+      authModal.style.display = "none";
     }
   });
+
+  // ---------------------------------------
+  //  FUNCIONES PARA CAMBIAR DE TAB
+  // ---------------------------------------
+  tabLogin.addEventListener("click", showLoginTab);
+  tabRegister.addEventListener("click", showRegisterTab);
+
+  function showLoginTab() {
+    tabLogin.classList.add("active");
+    tabRegister.classList.remove("active");
+    loginFormDiv.style.display = "block";
+    registerFormDiv.style.display = "none";
+    authError.textContent = "";
+    authErrorReg.textContent = "";
+  }
+
+  function showRegisterTab() {
+    tabLogin.classList.remove("active");
+    tabRegister.classList.add("active");
+    loginFormDiv.style.display = "none";
+    registerFormDiv.style.display = "block";
+    authError.textContent = "";
+    authErrorReg.textContent = "";
+  }
 
   // ---------------------------------------
   //  FUNCIÓN: Manejar login
   // ---------------------------------------
   btnLogin.addEventListener("click", () => {
-    const email = emailInput.value.trim();
-    const pass  = passwordInput.value.trim();
+    const email = loginEmail.value.trim();
+    const pass  = loginPassword.value.trim();
+    authError.textContent = "";
 
-    if (email === "" || pass === "") {
-      loginError.textContent = "Ingresa email y contraseña.";
+    if (!email || !pass) {
+      authError.textContent = "Ingresa email y contraseña.";
       return;
     }
-
+    // Si coincide con admin
     if (email === ADMIN_EMAIL && pass === ADMIN_PASSWORD) {
-      // Es administrador
-      localStorage.setItem("role", "admin");
-      loginModal.style.display = "none";
+      authModal.style.display = "none";
       activarModoAdmin();
-    } else {
-      // Cualquier otro par email+pass → usuario normal
-      localStorage.setItem("role", "user");
-      loginModal.style.display = "none";
-      activarModoUsuario();
+      return;
     }
+    // Si coincide con usuario registrado
+    const usuariosGuardados = JSON.parse(localStorage.getItem("users")) || [];
+    const encontrado = usuariosGuardados.find(u => u.email === email && u.password === pass);
+    if (encontrado) {
+      authModal.style.display = "none";
+      activarModoUsuario();
+    } else {
+      authError.textContent = "Credenciales inválidas o usuario no registrado.";
+    }
+  });
+
+  // ---------------------------------------
+  //  FUNCIÓN: Manejar registro
+  // ---------------------------------------
+  btnRegister.addEventListener("click", () => {
+    const email = regEmail.value.trim();
+    const pass  = regPassword.value.trim();
+    const pass2 = regPasswordConfirm.value.trim();
+    authErrorReg.textContent = "";
+
+    if (!email || !pass || !pass2) {
+      authErrorReg.textContent = "Completa todos los campos.";
+      return;
+    }
+    if (pass !== pass2) {
+      authErrorReg.textContent = "Las contraseñas no coinciden.";
+      return;
+    }
+    // Verificar si ya existe el email entre usuarios registrados
+    const usuariosGuardados = JSON.parse(localStorage.getItem("users")) || [];
+    if (usuariosGuardados.some(u => u.email === email)) {
+      authErrorReg.textContent = "El correo ya está en uso.";
+      return;
+    }
+    // Guardar nuevo usuario (sin rol admin)
+    usuariosGuardados.push({ email, password: pass });
+    localStorage.setItem("users", JSON.stringify(usuariosGuardados));
+    authErrorReg.style.color = "green";
+    authErrorReg.textContent = "Registro exitoso. Ahora inicia sesión.";
+    // Limpiar campos
+    regEmail.value = "";
+    regPassword.value = "";
+    regPasswordConfirm.value = "";
   });
 
   // ---------------------------------------
@@ -365,6 +489,9 @@
       activarModoAdmin();
     } else if (role === "user") {
       activarModoUsuario();
+    } else {
+      btnLoginShow.style.display = "block";
+      btnLogout.style.display = "none";
     }
   });
 
@@ -377,7 +504,6 @@
     const descripcion = document.getElementById("descripcion").value.trim();
     const precio      = document.getElementById("precio").value.trim();
     const msgProd     = document.getElementById("msgProducto");
-
     msgProd.textContent = "";
 
     if (!inputImg.files[0]) {
@@ -391,7 +517,6 @@
       return;
     }
 
-    // Leer la imagen como base64 para guardarla en localStorage
     const reader = new FileReader();
     reader.onload = function(e) {
       const imagenData = e.target.result;
@@ -421,7 +546,6 @@
     const nuevoWa  = document.getElementById("nuevo-wa").value.trim();
     const nuevaDir = document.getElementById("nueva-direccion").value.trim();
     const msgCont  = document.getElementById("msgContacto");
-
     msgCont.textContent = "";
 
     if (!nuevoWa || !nuevaDir) {
@@ -429,7 +553,6 @@
       msgCont.textContent = "Completa todos los campos.";
       return;
     }
-
     contacto.whatsapp  = nuevoWa;
     contacto.direccion = nuevaDir;
     localStorage.setItem("contacto", JSON.stringify(contacto));
