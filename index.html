@@ -14,8 +14,25 @@
     header {
       background-color: #1a1a2e;
       color: #fff;
-      padding: 2em 1em;
+      padding: 2em 1em 1em;
       text-align: center;
+      position: relative;
+    }
+
+    .auth-links {
+      position: absolute;
+      top: 1em;
+      right: 1em;
+    }
+
+    .auth-links button {
+      margin-left: 10px;
+      padding: 6px 12px;
+      background-color: #0f3460;
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
     }
 
     nav {
@@ -60,6 +77,10 @@
 </head>
 <body>
   <header>
+    <div class="auth-links">
+      <button onclick="showLogin()">Iniciar Sesión</button>
+      <button onclick="showRegister()">Registrarse</button>
+    </div>
     <h1>DETAILINGTECHNOLOGIES</h1>
     <p>Innovación y tecnología para tu día a día</p>
   </header>
@@ -73,12 +94,12 @@
   <div class="container">
     <section class="card" id="productos">
       <h2>Productos</h2>
-      <p>Componentes Electronicos, kit de Arduinos y mas...</p>
+      <div id="product-list"></div>
     </section>
-    
+
     <section class="card" id="contacto">
       <h2>Contacto</h2>
-      <p>📍 Dirección: Envios a Domicilio<br>📞 Tel: +504 9275-8062<br>📧 Email: 
+      <p>📍 Dirección: Envios a Domicilio<br>📞 Tel: +504 9275-8062<br>📧 Email: contacto@detailingtechnologies.com</p>
     </section>
   </div>
 
@@ -86,24 +107,102 @@
     &copy; 2025 DETAILINGTECHNOLOGIES. Todos los derechos reservados.
   </footer>
 
-  <!-- Firebase SDK con configuración -->
+  <!-- Firebase SDK y lógica -->
   <script type="module">
-    // Importa las funciones necesarias desde el SDK
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, getDocs, addDoc, deleteDoc, updateDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-    // Configuración de Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDTq6tg23FH6o-msd8smbvsoEPgH6hW-Lo",
       authDomain: "detailingtechnologies-1a8b4.firebaseapp.com",
       projectId: "detailingtechnologies-1a8b4",
-      storageBucket: "detailingtechnologies-1a8b4.firebasestorage.app",
+      storageBucket: "detailingtechnologies-1a8b4.appspot.com",
       messagingSenderId: "1016910506813",
       appId: "1:1016910506813:web:7af1bc876bc41f616ef354"
     };
 
-    // Inicializa Firebase
     const app = initializeApp(firebaseConfig);
-    console.log("Firebase inicializado correctamente", app);
+    const auth = getAuth();
+    const db = getFirestore();
+    const storage = getStorage();
+
+    const ADMIN_EMAIL = "admin@detailing.com";
+
+    const productList = document.getElementById("product-list");
+
+    async function loadProducts() {
+      const querySnapshot = await getDocs(collection(db, "productos"));
+      productList.innerHTML = "";
+      querySnapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <h3>${data.nombre}</h3>
+          <p>${data.descripcion}</p>
+          ${data.imagenURL ? `<img src="${data.imagenURL}" width="200">` : ''}
+          ${auth.currentUser?.email === ADMIN_EMAIL ? `<button onclick="deleteProduct('${docSnap.id}')">Eliminar</button>` : ''}
+        `;
+        productList.appendChild(card);
+      });
+    }
+
+    async function deleteProduct(id) {
+      await deleteDoc(doc(db, "productos", id));
+      loadProducts();
+    }
+
+    window.showLogin = function () {
+      const email = prompt("Correo:");
+      const password = prompt("Contraseña:");
+      signInWithEmailAndPassword(auth, email, password).catch(alert);
+    }
+
+    window.showRegister = function () {
+      const email = prompt("Nuevo correo:");
+      const password = prompt("Nueva contraseña:");
+      createUserWithEmailAndPassword(auth, email, password).catch(alert);
+    }
+
+    onAuthStateChanged(auth, user => {
+      if (user?.email === ADMIN_EMAIL) {
+        const form = document.createElement("div");
+        form.className = "card";
+        form.innerHTML = `
+          <h3>MODIPRO</h3>
+          <input id="prod-name" placeholder="Nombre"><br>
+          <textarea id="prod-desc" placeholder="Descripción"></textarea><br>
+          <input type="file" id="prod-img"><br>
+          <button onclick="addProduct()">Agregar</button>
+          <button onclick="logout()">Cerrar sesión</button>
+        `;
+        productList.prepend(form);
+      }
+      loadProducts();
+    });
+
+    window.addProduct = async function () {
+      const nombre = document.getElementById("prod-name").value;
+      const descripcion = document.getElementById("prod-desc").value;
+      const imagenInput = document.getElementById("prod-img");
+
+      let imagenURL = "";
+      if (imagenInput.files[0]) {
+        const file = imagenInput.files[0];
+        const imgRef = ref(storage, `productos/${Date.now()}_${file.name}`);
+        await uploadBytes(imgRef, file);
+        imagenURL = await getDownloadURL(imgRef);
+      }
+
+      await addDoc(collection(db, "productos"), { nombre, descripcion, imagenURL, timestamp: serverTimestamp() });
+      loadProducts();
+    }
+
+    window.logout = function () {
+      signOut(auth);
+    }
   </script>
 </body>
 </html>
