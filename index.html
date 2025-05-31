@@ -2,83 +2,87 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>DetailingTechnologies</title>
+  <title>Agregar Imágenes Fácilmente</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 0;
-    }
-
-    header {
-      background-color: #222;
-      color: white;
       padding: 20px;
+    }
+    #upload-area {
+      border: 2px dashed #aaa;
+      padding: 30px;
       text-align: center;
-    }
-
-    section.card {
-      background: white;
-      margin: 30px auto;
-      padding: 20px;
       border-radius: 10px;
-      max-width: 800px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      cursor: pointer;
+      background: #f9f9f9;
     }
-
-    .product {
-      margin-bottom: 20px;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 15px;
+    #upload-area.hover {
+      background-color: #e0f7fa;
     }
-
-    .product img {
-      width: 150px;
-      border-radius: 10px;
+    #preview {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
     }
-
-    footer {
-      background-color: #222;
-      color: white;
-      text-align: center;
-      padding: 10px;
+    .preview-img {
+      max-width: 150px;
+      max-height: 150px;
+      object-fit: cover;
+      border: 1px solid #ccc;
+      border-radius: 8px;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>DetailingTechnologies</h1>
-    <p>Productos tecnológicos a tu alcance</p>
-  </header>
+  <h2>Sube tus imágenes</h2>
+  <div id="upload-area">Haz clic o arrastra imágenes aquí</div>
+  <input type="file" id="file-input" multiple accept="image/*" hidden />
+  
+  <div id="preview"></div>
 
-  <section class="card" id="productos">
-    <h2>Productos</h2>
+  <script>
+    const uploadArea = document.getElementById('upload-area');
+    const fileInput = document.getElementById('file-input');
+    const preview = document.getElementById('preview');
 
-    <div class="product">
-      <img src="Users\evers\Pictures\UP\UP.jpg" alt="ARDUINO UNO R3 SMD">
-      <h3>ARDUINO UNO R3 SMD</h3>
-      <p>Placa compatible para proyectos electrónicos, ideal para aprender robótica y automatización.</p>
-      <p><strong>Precio:</strong> L 450</p>
-    </div>
+    uploadArea.addEventListener('click', () => fileInput.click());
 
-    <!-- Puedes copiar este bloque para más productos -->
-    <!--
-    <div class="product">
-      <img src="IMAGENES/otro-producto.jpg" alt="Nombre del producto">
-      <h3>Nombre del producto</h3>
-      <p>Descripción del producto.</p>
-      <p><strong>Precio:</strong> L 000</p>
-    </div>
-    -->
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('hover');
+    });
 
-  </section>
+    uploadArea.addEventListener('dragleave', () => {
+      uploadArea.classList.remove('hover');
+    });
 
-  <footer>
-    <p>© 2025 DetailingTechnologies - Todos los derechos reservados</p>
-  </footer>
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('hover');
+      handleFiles(e.dataTransfer.files);
+    });
+
+    fileInput.addEventListener('change', () => {
+      handleFiles(fileInput.files);
+    });
+
+    function handleFiles(files) {
+      Array.from(files).forEach(file => {
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = 'preview-img';
+            preview.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+  </script>
 
 </body>
 </html>
