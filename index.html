@@ -103,8 +103,8 @@
   <div class="producto">
     <img src="Kit de Arduino Basico.jpeg" alt="Kit Arduino Básico" />
     <h3>Kit Arduino Básico</h3>
-    <p><strong>L700.00</strong></p>
-    <button onclick="agregarAlCarrito('Kit Arduino Básico', 700)">Agregar al carrito</button>
+    <p><strong>L550.00</strong></p>
+    <button onclick="agregarAlCarrito('Kit Arduino Básico', 550)">Agregar al carrito</button>
   </div>
 </div>
 
@@ -139,7 +139,7 @@
       li.className = 'item-carrito';
       li.innerHTML = `
         ${item.nombre} - L${item.precio}
-        <button class="boton-eliminar" onclick="eliminarDelCarrito(${index})">x</button>
+        <button class="boton-eliminar" onclick="eliminarDelCarrito(${index})"> x </button>
       `;
       lista.appendChild(li);
     });
